@@ -1,7 +1,7 @@
 import java.sql.*;
 import java.util.Scanner;
 
-public class emol {
+public class Employeeoperations{
 
     public static void main(String[] args) {
 
@@ -20,7 +20,7 @@ public class emol {
 
             while (true) {
 
-                System.out.println("\n===== Employee Menu =====");
+                System.out.println("\n========== Employee Menu ==========");
                 System.out.println("1. Add Employee");
                 System.out.println("2. Display Employees");
                 System.out.println("3. Delete Employee");
@@ -33,6 +33,7 @@ public class emol {
 
                 switch (choice) {
 
+                    // Add Employee
                     case 1:
 
                         System.out.print("Enter Employee ID: ");
@@ -51,23 +52,28 @@ public class emol {
                         double emp_salary = sc.nextDouble();
 
                         String insertQuery =
-                                "INSERT INTO employee1 VALUES (" +
+                                "INSERT INTO employee1 VALUES(" +
                                 emp_id + ",'" +
                                 emp_name + "','" +
                                 emp_jobrole + "','" +
                                 emp_hiredate + "'," +
                                 emp_salary + ")";
 
-                        stmt.executeUpdate(insertQuery);
+                        int r = stmt.executeUpdate(insertQuery);
 
-                        System.out.println("Employee inserted successfully.");
+                        if (r > 0)
+                            System.out.println("Employee inserted successfully.");
+                        else
+                            System.out.println("Insertion failed.");
+
                         break;
 
+                    // Display Employees
                     case 2:
 
                         ResultSet rs = stmt.executeQuery("SELECT * FROM employee1");
 
-                        System.out.println("-------------------------------------------------------------");
+                        System.out.println("\n-------------------------------------------------------------");
                         System.out.println("ID\tNAME\tROLE\tHIRE DATE\tSALARY");
                         System.out.println("-------------------------------------------------------------");
 
@@ -83,6 +89,7 @@ public class emol {
 
                         break;
 
+                    // Delete Employee
                     case 3:
 
                         System.out.print("Enter Employee ID to Delete: ");
@@ -100,6 +107,7 @@ public class emol {
 
                         break;
 
+                    // Update Salary
                     case 4:
 
                         System.out.print("Enter Employee ID: ");
@@ -121,38 +129,42 @@ public class emol {
 
                         break;
 
+                    // Display Column Details
                     case 5:
 
-                        System.out.println("Available Columns:");
-                        System.out.println("emp_id");
-                        System.out.println("emp_name");
-                        System.out.println("emp_jobrole");
-                        System.out.println("emp_hiredate");
-                        System.out.println("emp_salary");
+                        ResultSet rs1 = stmt.executeQuery("SELECT * FROM employee1");
 
-                        System.out.print("Enter Column Name: ");
-                        String column = sc.next();
+                        System.out.println("\n================ EMPLOYEE DETAILS ================");
 
-                        ResultSet rs1 = stmt.executeQuery(
-                                "SELECT " + column + " FROM employee1");
+                        System.out.printf("%-10s %-15s %-15s %-15s %-10s%n",
+                                "EMP_ID", "EMP_NAME", "JOB_ROLE", "HIRE_DATE", "SALARY");
+
+                        System.out.println("--------------------------------------------------------------------------");
 
                         while (rs1.next()) {
-                            System.out.println(rs1.getString(1));
+
+                            System.out.printf("%-10d %-15s %-15s %-15s %-10.2f%n",
+                                    rs1.getInt("emp_id"),
+                                    rs1.getString("emp_name"),
+                                    rs1.getString("emp_jobrole"),
+                                    rs1.getDate("emp_hiredate"),
+                                    rs1.getDouble("emp_salary"));
                         }
 
                         break;
 
+                    // Exit
                     case 6:
 
+                        stmt.close();
                         conn.close();
                         sc.close();
 
-                        System.out.println("Thank you!");
+                        System.out.println("Thank You...");
                         return;
 
                     default:
-
-                        System.out.println("Invalid choice.");
+                        System.out.println("Invalid Choice.");
                 }
             }
 
